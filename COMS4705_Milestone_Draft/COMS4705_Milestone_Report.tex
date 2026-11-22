@@ -20,7 +20,6 @@
 \setlength{\intextsep}{6pt plus 1pt minus 1pt}
 
 % Columbia COMS 4705 Project Milestone template; instructions intentionally removed.
-% REPLACE before submission: proposal-grading TA's name.
 % Numbers below come from results/ (results_log.csv, summary.csv,
 % paired_differences.csv, confusable_pairs_test.csv; run of 2026-11-22).
 \NewDocumentCommand{\projecttitle}{m m m}{%
@@ -33,7 +32,7 @@
 \projecttitle
   {Few-Shot Banking Customer Intent Classification: A Controlled Study of SetFit}
   {intent detection, few-shot classification, contrastive learning, SetFit}
-  {\textit{[Insert proposal-grading TA's name]}}
+  {Rishika Mamidibathula}
 
 \author{
   Tian Zhou \\
@@ -49,17 +48,15 @@
   \texttt{yl6325@columbia.edu}
 }
 
-\newcommand{\intent}[1]{\texttt{#1}}
-
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We study whether SetFit's pairwise representation adaptation improves fine-grained banking intent detection enough to justify its cost. On BANKING77 with 8 and 32 examples per intent, we compare SetFit with frozen embeddings plus logistic regression (Frozen+LR) and cross-entropy (CE) tuning from the same encoder and samples. Over three paired seeds, SetFit (78.6/87.1 test macro-F1) matches but does not beat Frozen+LR (78.8/87.3) at 26--37$\times$ its training time; both clearly beat CE (70.6/83.6). In every final run SetFit's validation score peaks at its first checkpoint, suggesting that the already contrastively trained encoder leaves little for pair training to add.
+We study whether SetFit's pairwise representation adaptation improves fine-grained banking intent detection enough to justify its cost. On BANKING77 with 8 and 32 examples per intent, we compare SetFit with frozen embeddings plus logistic regression (Frozen+LR) and cross-entropy (CE) tuning from the same encoder and samples. Over three paired seeds, SetFit (78.6/87.1 test macro-F1) matches but does not beat Frozen+LR (78.8/87.3) at 26--37$\times$ its training time; both beat CE (70.6/83.6). SetFit's validation score peaks at its first checkpoint in every final run, which our next experiments examine.
 \end{abstract}
 
 \section{Approach}
-\textbf{Task and motivation.} BANKING77 is 77-way, single-label English classification of banking support requests \citep{casanueva2020efficient,polyai2020banking77}. SetFit learns from same/different-label sentence pairs \citep{tunstall2022setfit}, while frozen sentence encoders can already work well for intent detection \citep{ma2022sentence}. We ask whether adaptation beats a matched frozen encoder consistently across samples and at an acceptable cost, particularly for confusable labels \citep{zhang2025clear}.
+\textbf{Task and motivation.} BANKING77 is 77-way, single-label English classification of banking support requests \citep{casanueva2020efficient,polyai2020banking77}. SetFit learns from same/different-label sentence pairs \citep{tunstall2022setfit}, while frozen sentence encoders can already work well for intent detection \citep{ma2022sentence}. We ask whether adaptation beats a matched frozen encoder consistently across samples and at acceptable cost, notably on confusable labels \citep{zhang2025clear}.
 
 \textbf{Matched methods.} All methods start from \texttt{all-MiniLM-L6-v2} (22.7M parameters; 384-dimensional, mean-pooled, normalized embeddings) \citep{minilm2026}. (1) \textbf{Frozen+LR} freezes the encoder and fits multinomial logistic regression (LR). (2) \textbf{CE tuning} jointly trains the encoder and a 77-way linear head with cross-entropy. (3) \textbf{SetFit} updates the encoder with balanced positive/negative sentence pairs, re-embeds the selected labeled texts, then fits the \emph{same} LR configuration as Frozen+LR. Its pair objective is
 \begin{equation}
@@ -69,12 +66,12 @@ We study whether SetFit's pairwise representation adaptation improves fine-grain
 \end{equation}
 For each anchor, we draw four distinct positive and four distinct negative partners from the selected training set. Both LR models use \texttt{lbfgs}, $C=1$, intercept, and 2,000 maximum iterations; CE is compared at the pipeline level.
 
-\textbf{Implementation (complete).} We wrote all pipelines in PyTorch and \texttt{transformers} (encoder with masked mean pooling and L2 normalization, pair sampler, training loops, checkpoint selection, per-component timing), using SetFit's published code only as a reference \citep{setfit2026} and scikit-learn for LR and metrics. Eight offline tests cover every stage; all 32 runs share one code hash.
+\textbf{Implementation (complete).} We wrote all code in PyTorch \citep{paszke2019pytorch} and \texttt{transformers} \citep{wolf2020transformers}: the encoder (masked mean pooling, L2 normalization), pair sampler, training loops, checkpoint selection, and per-component timing. SetFit's code \citep{setfit2026} served only as a reference; LR and metrics use scikit-learn \citep{pedregosa2011scikit}. Eight offline tests on synthetic data cover every stage; all 32 runs share one code hash.
 
 \section{Experiments}
-\textbf{Data.} Our exact-text audit removes 4 redundant training rows and 6 training texts that also occur in test (9,993 remain; the 3,080 test rows are untouched). Stratified validation (seed 2026) takes 965 examples, leaving 9,028 candidates ($\geq$32 per intent); nested samples have 616/2,464 texts (4,928/19,712 SetFit pairs) at $k=8/32$.
+\textbf{Data.} Our exact-text audit of BANKING77's 10,003 training and 3,080 test texts \citep{casanueva2020efficient,polyai2020banking77} removes 4 redundant training rows and 6 training texts also found in test (9,993 remain; test is untouched). Stratified validation (seed 2026) takes 965 examples, leaving 9,028 candidates ($\geq$32 per intent); nested samples have 616/2,464 texts (4,928/19,712 SetFit pairs) at $k=8/32$.
 
-\textbf{Protocol and metrics.} Seed 0 selects each tuned method's learning rate ($10^{-5}$ vs.\ $3\times10^{-5}$) on validation; seeds 11, 22, and 33 give final runs sharing each training sample across methods, each scored once on test. Encoder training: AdamW (weight decay 0.01), batch 32 (sentences for CE, pairs for SetFit), clipping 1.0, 10\% warmup then linear decay, FP16, 128-token truncation (never triggered), 300/1,000-update caps, validation every 50/100, best validation macro-F1 checkpoint kept. The primary metric is test macro-F1; we report means, sample SDs, and paired per-seed differences.
+\textbf{Protocol and metrics.} Seed 0 selects each tuned method's learning rate ($10^{-5}$ vs.\ $3\times10^{-5}$) on validation; final runs on seeds 11, 22, and 33 share each training sample across methods and are scored once on test. Encoder training: AdamW (weight decay 0.01), batch 32 (sentences for CE, pairs for SetFit), clipping 1.0, 10\% warmup then linear decay, FP16, 128-token truncation (never triggered), 300/1,000-update caps, validation every 50/100, best validation macro-F1 checkpoint kept. Test macro-F1 (unweighted mean of the 77 per-class F1s) is primary and accuracy secondary; we report means, sample SDs, and paired per-seed differences.
 
 \begin{table}[H]
 \centering
@@ -94,24 +91,24 @@ SetFit & 78.6 $\pm$ 0.2 & 87.1 $\pm$ 0.2 & $-0.20$ & $-0.15$ & 18.0 $\pm$ 0.6 & 
 \end{tabular}
 \end{table}
 
-\textbf{Main result.} SetFit does not beat the frozen encoder (Table~\ref{tab:models}): its paired difference is negative on all six seed--size pairs but at most 0.3 points, which with three seeds we read as no gain, not a reliable loss. It needs 26$\times$/37$\times$ Frozen+LR's training time and 2.5--2.6$\times$ its peak GPU memory (889/983 vs.\ 349/372 MB). We expected a gain, since pair-based adaptation targets this regime \citep{tunstall2022setfit}.
+\textbf{Main result.} SetFit does not beat Frozen+LR (Table~\ref{tab:models}). Its paired difference is negative on all six seed--size pairs but at most 0.3 points, which with three seeds we read as no gain; accuracy agrees (79.6/87.3 vs.\ 79.8/87.4). It needs 26$\times$/37$\times$ Frozen+LR's training time and 2.5--2.6$\times$ its peak GPU memory (889/983 vs.\ 349/372 MB). We expected a gain, since SetFit targets this few-shot regime \citep{tunstall2022setfit}.
 
-\textbf{Training curves (Figure~\ref{fig:curves}).} In every final SetFit run the first checkpoint (update 50/100) is best; validation macro-F1 then falls as the pair loss keeps decreasing (32 shots: 86.0--86.6 to 82.7--84.6). In five of six runs that checkpoint is already below Frozen+LR, and update 0 (equal to Frozen+LR) is not a candidate. Our explanation: \texttt{all-MiniLM-L6-v2} was already trained contrastively on about one billion sentence pairs \citep{minilm2026}, so few-shot pairs mostly make SetFit overfit.
+\textbf{Training curves (Figure~\ref{fig:curves}).} In every final SetFit run the first checkpoint (update 50/100) is best; later ones score lower although the pair loss falls (32 shots: 86.0--86.6 at update 100, 82.7--84.6 at 1,000). In five of six runs that checkpoint is already below Frozen+LR on validation, and update 0 (equal to Frozen+LR) is not a candidate. Two explanations fit: \texttt{all-MiniLM-L6-v2} was already trained contrastively on over one billion sentence pairs \citep{minilm2026}, leaving little to gain (consistent with \citep{ma2022sentence}), or any useful adaptation ends before the first checkpoint.
 
-\textbf{CE tuning (change since the proposal).} With the head at the encoder's learning rate (as proposed), CE's loss stayed near chance ($\ln 77\approx4.34$; 4.09/3.89 at the end) and seed-0 validation macro-F1 reached only 59.7/84.2. We gave the randomly initialized head a fixed learning rate of $10^{-3}$, re-ran both encoder rates on seed-0 validation, and locked $3\times10^{-5}$ (validation 70.6/84.0). CE gained at most 0.8 points over its last 200 updates at 32 shots, too little to close its 3.5-point gap.
+\textbf{CE tuning (change since the proposal).} With the head at the encoder's learning rate, as proposed, CE's loss fell only from $\ln 77\approx4.34$ to 4.09/3.89, with best seed-0 validation macro-F1 59.7/84.2. We gave the randomly initialized head its own untuned learning rate of $10^{-3}$, re-ran both encoder rates, and locked $3\times10^{-5}$ for both sizes (validation 70.6/84.0; 84.2 without it at 32 shots), so CE had twice SetFit's tuning runs. CE gained at most 0.8 points over its last 200 updates at 32 shots, so a longer budget is unlikely to close its 3.6-point gap to SetFit.
 
-\textbf{Cost accounting (TA feedback).} SetFit's 63.6\,s at 32 shots are 39.1\,s of encoder updates, 15.0\,s for 10 checkpoint LR fits, 5.0\,s checkpoint re-embedding, 2.9\,s validation, and 1.4\,s final refit: checkpoint selection is 36\% of its cost (31\% at 8 shots). Test inference (0.6\,s) is separate. All 32 runs took 12.7 minutes of training on one NVIDIA L4, far below the 10 GPU-hour budget.
+\textbf{Cost accounting (TA feedback).} SetFit's 63.6\,s at 32 shots include 39.1\,s of encoder updates, 15.0\,s for 10 checkpoint LR fits, 5.0\,s of checkpoint re-embedding, 2.9\,s of validation, and 1.4\,s of final refit, so checkpoint selection is 36\% of its cost (31\% at 8 shots). All 32 runs took 12.7 training minutes on one NVIDIA L4.
 
-\textbf{Confusable intents.} On five pairs preselected from seed-0 Frozen+LR validation, pooled test confusion is 13.8/13.6/15.3\% (SetFit/Frozen+LR/CE) at 8 shots and 7.5/7.1/9.2\% at 32; no pair improves with SetFit on every seed.
+\textbf{Confusable intents.} On five pairs preselected on seed-0 Frozen+LR validation, pooled test confusion is 13.8/13.6/15.3\% (SetFit/Frozen+LR/CE) at 8 shots and 7.5/7.1/9.2\% at 32; no pair improves with SetFit on every seed.
 
 \section{Future Work}
-\textbf{Changes and planned experiments.} Apart from CE's head learning rate (Section 2), the plan is unchanged; final runs finished on Nov.~22, not Dec.~5, freeing time to explain the null result under the same locked protocol. (i) \emph{Checkpoint grid}: add update 0 and validate every 10 updates up to 100, testing whether any pair training helps (Nov.~30). (ii) \emph{Encoder ablation}: rerun all methods from \texttt{all-MiniLM-L6-v2}'s base model, same architecture without contrastive sentence training \citep{minilm2026}; if our explanation holds, SetFit should beat Frozen+LR there (Dec.~5). (iii) \emph{CE check}: a 2,000-update 32-shot cap, not used for selection. (iv) \emph{Seed-wise error analysis (TA feedback)}: per-class recall and up to ten seed-11 test cases per correctness cell where SetFit fixes or introduces errors relative to Frozen+LR, covering close labels, paraphrases, and missing context (Dec.~12). Stretch: $k\in\{2,4\}$. Final materials: Dec.~17.
+\textbf{Changes and plan.} Besides CE's head learning rate, the core runs finished on Nov.~22 rather than Dec.~5, freeing time for (i)--(iii), which keep the locked protocol. (i) \emph{Checkpoint grid}: add update 0 and validate every 10 updates up to 100 (Nov.~30). (ii) \emph{Encoder ablation}: rerun all methods from the base model of \texttt{all-MiniLM-L6-v2} (same architecture, no contrastive sentence training \citep{minilm2026}); if headroom explains our result, SetFit should then beat Frozen+LR (Dec.~5). (iii) \emph{CE check}: a 2,000-update 32-shot cap, not used for selection. (iv) \emph{Seed-wise error analysis (TA feedback, as planned)}: per-class recall and up to ten seed-11 test cases per SetFit/Frozen+LR correctness cell, labeled close-label ambiguity, paraphrase, or missing information (Dec.~12). Stretch: the proposal's optional hard-negative variant and $k\in\{2,4\}$. Final report: Dec.~17.
 
 \clearpage
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/tuning_curves.pdf}
-\caption{Seed-0 tuning runs (validation only; the final seeds show the same pattern). Left: validation macro-F1 per checkpoint, with Frozen+LR as the dotted line. Middle: CE training loss; dotted and dash-dot lines use the separate head learning rate $10^{-3}$. Right: SetFit pair loss. SetFit's pair loss keeps falling while its validation macro-F1 stays flat or declines, near the Frozen+LR line.}
+\caption{Seed-0 tuning runs (validation only; the final seeds show the same pattern). Left: validation macro-F1 per checkpoint, with Frozen+LR as the dotted line. Middle: CE training loss; dotted and dash-dot lines use the separate head learning rate $10^{-3}$. Right: SetFit pair loss. SetFit's pair loss keeps falling while its validation macro-F1 stays near the Frozen+LR line.}
 \label{fig:curves}
 \end{figure}
 
