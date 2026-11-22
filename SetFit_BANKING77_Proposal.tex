@@ -1,0 +1,109 @@
+\documentclass{article}
+\usepackage[final]{neurips_2019}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url,booktabs,amsmath,amsfonts,microtype,graphicx,xcolor}
+\usepackage{enumitem}
+\renewcommand{\ttdefault}{pcr}
+\setlist[itemize]{leftmargin=*,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlength{\emergencystretch}{2em}
+\makeatletter
+\renewcommand{\@noticestring}{Columbia COMS 4705: Natural Language Processing, Fall 2026.}
+% Preserve the template typography and spacing, without decorative title rules.
+\renewcommand{\@toptitlebar}{\vskip 0.25in\vskip -\parskip}
+\renewcommand{\@bottomtitlebar}{\vskip 0.29in\vskip -\parskip\vskip 0.09in}
+\makeatother
+\title{Few-Shot Banking Customer Intent Classification:\\A Controlled Study of SetFit\\[0.5em]
+\small\normalfont COMS 4705 Project Proposal\\
+\small\normalfont\textbf{Keywords:} \textit{intent detection, few-shot classification, contrastive learning, SetFit}}
+\author{[Name 1]\\Columbia University\\\texttt{[UNI1]@columbia.edu}
+\And [Name 2]\\Columbia University\\\texttt{[UNI2]@columbia.edu}
+\And [Name 3]\\Columbia University\\\texttt{[UNI3]@columbia.edu}}
+\begin{document}
+\maketitle
+
+\section{Key Information}
+\begin{itemize}
+\item Mentor: We have no particular mentor.
+\end{itemize}
+
+\section{Literature review and reflection}
+\paragraph{Papers you read.}
+\textbf{Efficient Few-Shot Learning Without Prompts} \cite{tunstall2022setfit} asks how to adapt text classifiers with few labeled examples without prompt design or very large generative models. SetFit first tunes a Sentence Transformer on same-label and different-label sentence pairs, then fits logistic regression on the resulting embeddings; the paper reports strong few-shot results across classification tasks and repeated training samples. This provides our two-stage method and motivates testing whether representation adaptation adds value beyond an already pretrained encoder.
+
+\textbf{Efficient Intent Detection with Dual Sentence Encoders} \cite{casanueva2020intent} studies resource-efficient intent detection and introduces BANKING77, a single-domain dataset with 77 fine-grained banking intents. Fixed USE/ConveRT representations with a trainable classifier outperform the paper's BERT-based alternatives, especially in low-data settings. This makes a frozen-encoder baseline essential: updating representations is not automatically beneficial.
+
+\textbf{Clear Up Confusion} \cite{zhang2025confusion}, published at COLING 2025, addresses ambiguity among fine-grained intents in LLM-generated training data. It combines differential generation, validity/diversity refinement, and iterative contrastive feedback, reporting gains across three intent datasets. Its emphasis on neighboring intents motivates our confusion analysis and optional hard-negative sampling, but we will not reproduce its generation framework or use synthetic examples.
+
+\paragraph{Questions.}
+Our initial question was whether a small pretrained model can classify banking customer requests with few labels. Reading SetFit and the frozen-encoder results sharpened it to: \emph{With identical training examples and the same initial encoder, how much does SetFit's pairwise adaptation improve over frozen representations and supervised cross-entropy tuning at 8 versus 32 examples per intent?} The recent confusion study motivates checking whether adaptation reduces mistakes between easily confused customer intents. We will test whether the pretrained representation is already sufficient or benefits from task-specific training.
+
+\paragraph{Positioning and motivating your idea.}
+We will reproduce SetFit's two-stage training principle and extend the reproduction with a matched frozen-encoder comparison, nested training sizes, and predefined confusion analysis. The practical motivation is deciding whether task-specific training improves classification enough to justify its cost. Here, intent means the customer's request category, such as card delivery or a declined payment. The 8-shot and 32-shot settings count training examples per class; both additionally use the same 965 labeled validation examples for model selection. We therefore study limited training data, not a total annotation budget of only 8 or 32 labels per class.
+
+\newpage
+\section{Project description}
+\label{sec:description}
+
+\paragraph{Goal.}
+Measure SetFit's macro-F1 gain over frozen embeddings at 8 training examples per intent, and whether it changes at 32 examples. Compare supervised tuning, training cost, and variation across samples. Small or negative gains would support using the simpler frozen pipeline under this protocol. An optional experiment tests random versus similar-but-different-label negative pairs with the same pair count and update cap; completing it is not required for the core comparison.
+
+\paragraph{Task.}
+Closed-set, single-label English intent classification: input \texttt{``My new card still has not arrived''}; output \texttt{card\_arrival}. All 77 intents are present during training. We do not evaluate unseen-intent detection, response generation, or live bank deployment.
+
+\paragraph{Data.}
+BANKING77 \cite{casanueva2020intent,bankinghub} contains 77 customer-request categories, with 10,003 training and 3,080 test rows, released under CC BY 4.0 (attribution required). Our preliminary CSV audit compares exact strings after removing leading/trailing whitespace only. It found four redundant training rows with consistent labels and six distinct texts appearing in both splits. Keeping one copy per training text and removing those six training texts leaves 9,993 rows; overlap filtering uses text hashes, never test labels. We retain all 3,080 official test rows and document one repeated test text. Published results provide background; our cleaned splits and chosen encoder prevent direct numerical comparison.
+
+Within each class of size $n_c$, a fixed seed (2026) assigns $\lfloor0.1n_c\rfloor$ rows to validation: 965 total, leaving 9,028 candidate training rows and at least 32 per class. For seeds 11, 22, and 33, shuffle each class once and take the first $k\in\{8,32\}$ examples (616/2,464 total); the 8-shot set is nested within the 32-shot set. Every method uses identical samples. The unused pool supplies no text, pairs, or labels to training. We preserve punctuation, use the checkpoint's tokenizer, pad dynamically, cap inputs at 128 tokens, and report truncation frequency.
+
+\paragraph{Methods.}
+SetFit is a training procedure, not the initial pretrained checkpoint. All three methods start from \texttt{sentence-transformers/all-MiniLM-L6-v2} \cite{minilmhub}, about 22.7M parameters, with attention-masked mean pooling and unit-normalized 384-dimensional sentence vectors.
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.15\linewidth}p{0.78\linewidth}@{}}
+\toprule
+Method & Training and prediction\\
+\midrule
+Frozen+LR & Keep encoder fixed; fit multinomial logistic regression (LR).\\
+CE tuning & Update encoder and a 77-way linear head jointly with cross-entropy.\\
+SetFit & Tune encoder on labeled sentence pairs, freeze it, then fit the same LR as Frozen+LR.\\
+\bottomrule
+\end{tabular}
+\end{center}
+For SetFit, each training sentence (anchor) samples four distinct same-label partners, excluding itself, and four distinct different-label partners. For each negative, sample another class uniformly, then a sentence in it, resampling repeated partners. Shuffle the resulting pairs; reversed pairs may both occur. This makes $8(77k)$ pairs: 4,928 at 8-shot and 19,712 at 32-shot. With $z=1$ for same-label pairs and $z=0$ otherwise, train the encoder $f_\theta$ using cosine-similarity mean squared error on each batch of $B$ pairs:
+\[
+\mathcal L_{\mathrm{pair}}=\frac{1}{B}\sum_{i=1}^{B}\bigl(\cos(f_\theta(x_i),f_\theta(x'_i))-z_i\bigr)^2.
+\]
+Both encoder-tuning methods use AdamW, weight decay 0.01, gradient clipping 1.0, 10\% linear warmup followed by linear decay, FP16, and batch size 32 (sentences for CE; pairs for SetFit). Caps are 300 updates at $k=8$ and 1,000 at $k=32$, with validation every 50/100 updates; keep the best validation macro-F1 checkpoint, breaking ties toward the earlier one. SetFit validation fits LR on current training embeddings. LR uses \texttt{lbfgs}, $C=1$, an intercept, and 2,000 maximum iterations; it uses training labels only. Before final runs, seed 0 selects the learning rate from $\{10^{-5},3\!\times\!10^{-5}\}$ separately for each tuning method and $k$: eight tuning runs, identical selection budgets. Freeze choices before the three final seeds. Equal update caps do not imply equal FLOPs: a pair processes two texts, so we measure actual cost.
+
+We will write the PyTorch loops, pair sampler/loss, split manifests, and evaluation scripts. Downloaded components are the pretrained encoder/tokenizer and standard library implementations of LR and metrics; SetFit's notebook and few-shot scripts \cite{setfitcode} are references and a pilot sanity check, not unchanged deliverables. The optional variant replaces two of each anchor's four random negatives with its nearest different-label training neighbors under the frozen initial encoder; pair counts and update caps stay fixed.
+
+\paragraph{Evaluation.}
+Primary: macro-F1 (mean of 77 one-versus-rest class F1s, zero for undefined F1); secondary: accuracy, per-class recall, training wall time, and peak GPU memory. Final results are means and sample standard deviations over three paired seeds, with per-seed SetFit-minus-baseline differences. These seeds vary both sampled examples and optimization, not just initialization. Evaluate each locked checkpoint once on the official test set, retaining predictions for all analyses; never tune on test results.
+
+Using the seed-0 frozen baseline's 8-shot validation predictions, preselect five unordered label pairs with the largest $C_{ij}+C_{ji}$ confusion counts (alphabetical tie break). On test, report each pair's bidirectional confusion rate, dividing by the number of examples whose gold label is in that pair; also report global performance so improvements are not cherry-picked. For seed 11, inspect up to ten test examples from each Frozen/SetFit correctness combination, sampled with seed 2026, and categorize close-intent ambiguity, paraphrase/wording, missing information, or other. These are descriptive explanations, not proof of internal understanding.
+
+\paragraph{Baselines.}
+We run Frozen+LR and CE tuning ourselves. Frozen+LR is the matched ablation of SetFit's representation-training stage because its initial encoder and LR are shared. CE is a pipeline comparison, not an isolated causal test of contrastive loss, since its classifier is trained jointly. No published score substitutes for a baseline run.
+
+\paragraph{Justification.}
+\begin{itemize}
+\item \textbf{Relevance to course material:} The project builds on sentence representations and neural optimization (Lecs. 3--4), classification and evaluation (Lec. 5), Transformer encoders (Lec. 8), and finetuning pretrained models (Lec. 13).
+\item \textbf{Technical component:} We write encoder-training loops, the sentence-pair sampler and loss, supervised baseline, and data/evaluation code; pretrained weights and standard LR/metric implementations are downloaded.
+\item \textbf{Language/code/math data:} We train and evaluate on English banking customer requests, predicting one of 77 request categories from each text.
+\item \textbf{Feasibility:} A 22.7M-parameter encoder, two training sizes, and capped runs target 10 core GPU-hours on one GPU (see below); all three members code and write.
+\item \textbf{Novelty is not required:} We reproduce SetFit's training principle and add matched frozen-encoder controls, a nested label-size comparison, and confusion/error analysis. A new architecture or state-of-the-art result is not required.
+\end{itemize}
+
+\paragraph{Team, compute, and timeline.}
+Member 1: encoder training and CE baseline; Member 2: data audit, splits, pair sampler and optional variant; Member 3: LR baseline, metrics, timing, and error analysis. Each writes the corresponding methods/results text and reviews another member's code. Names/UNIs above identify the final owners.
+
+Core: 18 final method--size--seed settings (12 encoder trainings, six frozen-head fits), plus eight tuning trainings. On one T4 16GB or L4 24GB, reserve 2 GPU-hours for tuning, 4 for final training/checkpoint evaluation, 1 for remaining embedding/test evaluation, and 3 for setup/debugging: \textbf{10 GPU-hours}; the optional six-run variant adds at most 2 hours. These are planning allowances, not measured runtimes. A two-run pilot within the tuning budget times a CE and SetFit run and checks memory; if the projected core exceeds 10 hours, use the 8-shot setting for all three methods/seeds and keep 32-shot as the first extension. Budget \textbf{USD 25} from pooled GCP credits for at most 12 hours at an assumed all-in ceiling of USD 2/hour plus USD 1 storage; this is a spending assumption, not a price quote. Available team credits: \textbf{[actual balance]}; the plan fits if at least USD 25 remains. No paid LLM calls are needed.
+
+Targets: \textbf{Nov. 23}, audited splits, all three methods running, completed tuning and pilot timing; \textbf{Dec. 5}, final core runs and locked test predictions; \textbf{Dec. 12}, confusion/error analysis and optional variant within the cap; \textbf{Dec. 17}, final report, code, environment lockfile, and run manifests.
+
+\clearpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+\end{document}

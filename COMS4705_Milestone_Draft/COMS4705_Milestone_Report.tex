@@ -1,0 +1,117 @@
+\documentclass{article}
+\PassOptionsToPackage{numbers}{natbib}
+\usepackage[final]{neurips_2019}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{xparse}
+\usepackage{array}
+\usepackage{float}
+\setlength{\textfloatsep}{7pt plus 1pt minus 1pt}
+\setlength{\intextsep}{6pt plus 1pt minus 1pt}
+
+% Columbia COMS 4705 Project Milestone template; instructions intentionally removed.
+% REPLACE before submission: proposal-grading TA's name, and the results
+% marked "pending" below with measured outputs from the group's runs.
+\NewDocumentCommand{\projecttitle}{m m m}{%
+  \title{#1\\[0.7em]
+  {\normalsize\normalfont Columbia COMS 4705 Project Milestone}\\[0.8em]
+  \parbox{0.95\textwidth}{\normalfont\small\centering
+    \textbf{Keywords:} \textit{#2}\par\vspace{0.4em}
+    \textbf{TA Mentor:} #3\par}}%
+}
+\projecttitle
+  {Few-Shot Banking Customer Intent Classification: A Controlled Study of SetFit}
+  {intent detection, few-shot classification, contrastive learning, SetFit}
+  {\textit{[Insert proposal-grading TA's name]}}
+
+\author{
+  Tian Zhou \\
+  Columbia University \\
+  \texttt{tz2751@columbia.edu}
+  \And
+  Liping Zhu \\
+  Columbia University \\
+  \texttt{lz3147@columbia.edu}
+  \And
+  Jim Lu \\
+  Columbia University \\
+  \texttt{yl6325@columbia.edu}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study whether SetFit's pairwise representation adaptation improves fine-grained banking intent detection enough to justify its cost. At 8 and 32 examples per intent, we compare SetFit with frozen embeddings plus logistic regression (Frozen+LR) and supervised cross-entropy (CE) tuning on BANKING77. A preliminary dataset audit identifies duplicate and overlapping texts and creates disjoint evaluation splits. Preliminary findings concern dataset integrity; model scores are pending. We specify matched training, complete checkpoint-selection timing, and seed-wise analyses of intent confusions.
+\end{abstract}
+
+\section{Approach}
+\textbf{Task and motivation.} BANKING77 is 77-way, single-label English classification of banking support requests \citep{casanueva2020efficient,polyai2020banking77}. SetFit learns from same/different-label sentence pairs \citep{tunstall2022setfit}, while frozen sentence encoders can already work well for intent detection \citep{ma2022sentence}. We ask whether adaptation beats a matched frozen encoder consistently across samples and at an acceptable cost, particularly for confusable labels \citep{zhang2025clear}.
+
+\textbf{Matched methods.} All methods start from \texttt{all-MiniLM-L6-v2} (22.7M parameters; 384-dimensional, mean-pooled, normalized embeddings) \citep{minilm2026}. (1) \textbf{Frozen+LR} freezes the encoder and fits multinomial logistic regression (LR). (2) \textbf{CE tuning} jointly trains the encoder and a 77-way linear head with cross-entropy. (3) \textbf{SetFit} updates the encoder with balanced positive/negative sentence pairs, re-embeds the selected labeled texts, then fits the \emph{same} LR configuration as Frozen+LR. Its pair objective is
+\begin{equation}
+  \mathcal{L}_{\mathrm{pair}}=\frac{1}{B}\sum_{i=1}^{B}
+  \bigl[\cos(f_{\theta}(x_i),f_{\theta}(x'_i))-z_i\bigr]^2,
+  \qquad z_i=\mathbf{1}[y_i=y'_i].
+\end{equation}
+For each anchor, we draw four distinct positive and four distinct negative partners from the selected training set (4,928/19,712 pairs). Both LR models use \texttt{lbfgs}, $C=1$, intercept, and 2,000 maximum iterations; CE is compared at the pipeline level. Our planned custom PyTorch loops and pair sampler use published SetFit code as reference, alongside pretrained weights and standard LR/metric implementations \citep{setfit2026}.
+
+\textbf{Implementation status.} The data audit and study protocol are documented. The next targets are to verify all three model pipelines, checkpoint selection, and timing instrumentation before reporting training results.
+
+\clearpage
+\section{Experiments}
+\textbf{Data and preliminary findings.} The proposal's exact-text audit (after trimming whitespace) found four redundant training rows and six cross-split texts. Removing them from training leaves 9,993 rows; the 3,080 official test rows remain untouched. Stratified validation (seed 2026) retains 965 examples, leaving 9,028 training candidates and at least 32 per intent (Table~\ref{tab:data}). These are \emph{data-audit findings}, not model scores.
+\begin{table}[H]
+\centering
+\caption{Preliminary dataset audit and matched few-shot setup.}
+\label{tab:data}
+\small
+\begin{tabular}{@{}lrlr@{}}
+\toprule
+Original train & 10,003 & Cleaned train & 9,993 \\
+Redundant train rows & 4 & Cross-split train texts removed & 6 \\
+Validation / candidate train & 965 / 9,028 & Official test & 3,080 \\
+8-shot / 32-shot subset & 616 / 2,464 & SetFit pairs (8 / 32) & 4,928 / 19,712 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Protocol and metrics.} Nested per-class $k\in\{8,32\}$ samples use seed 0 for CE/SetFit learning-rate tuning ($10^{-5}$ vs. $3\times10^{-5}$), then seeds 11, 22, and 33 for paired final runs. All methods share each sampled training subset. We use dynamic padding, 128-token truncation (frequency logged), AdamW for encoder updates (weight decay 0.01), batch size 32, gradient clipping 1.0, 10\% warmup/linear decay, and FP16 where available. The 8/32-shot caps are 300/1,000 updates; checkpoints are selected by validation macro-F1 every 50/100 updates, favoring the earlier in a tie. Test macro-F1 (mean of 77 class F1s; undefined $=0$) is primary; accuracy and class recall are secondary. Test labels never inform model selection. Across final seeds, report means, sample SDs, and paired SetFit-minus-baseline differences. Because sampling and optimization both vary with seed, interpret SD as run-to-run variability, not a pure sample effect.
+
+\textbf{Cost accounting and preliminary model status.} Following the TA's feedback, SetFit training time will include pairing, encoder updates, re-embedding, \emph{every checkpoint-time LR fit}, and validation; test inference and setup overhead are recorded separately. The schedule implies 6/10 LR fits per 8/32-shot run: 32 across tuning and 48 across final SetFit runs, plus any final refits. We will log component/total times and peak GPU memory with consistent hardware boundaries. Preliminary model scores and times are not yet available; Table~\ref{tab:models} marks them pending.
+\begin{table}[H]
+\centering
+\caption{Model comparison to populate from actual runs (three paired final seeds). \emph{Pending} is not a measured result.}
+\label{tab:models}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+& \multicolumn{2}{c}{Test macro-F1 $\uparrow$} & \multicolumn{2}{c}{Train wall time $\downarrow$} \\
+Method & 8-shot & 32-shot & 8-shot & 32-shot \\
+\midrule
+Frozen+LR & pending & pending & pending & pending \\
+CE tuning & pending & pending & pending & pending \\
+SetFit & pending & pending & pending & pending \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Future Work}
+\textbf{Near-term execution.} Complete three pipelines, seed-0 tuning, and pilot timing (Nov.~23); run 18 final method/size/seed settings and save locked predictions/configuration manifests (Dec.~5). Fill Table~\ref{tab:models} and compare paired gains and costs. If the 10-GPU-hour core budget is exceeded, prioritize all 8-shot conditions; hard-negative sampling remains optional.
+
+\textbf{Seed-wise error analysis (TA feedback).} Preselect five intent pairs by bidirectional confusion on \emph{seed-0 Frozen+LR 8-shot validation}, avoiding test-driven selection. For each test seed, compute pair confusion $(C_{ij}+C_{ji})/(n_i+n_j)$ for Frozen+LR and SetFit; indicate whether SetFit helps the same pairs across all seeds, especially at 8 shots. For seed 11, sample up to ten cases per correctness cell (seed 2026), showing gold and both predictions where SetFit fixes or introduces errors. Analyze close labels, paraphrases, and missing context. Finish error analysis (Dec.~12) and reproducible final materials (Dec.~17).
+
+\clearpage
+\bibliographystyle{unsrt}
+\bibliography{references}
+\end{document}

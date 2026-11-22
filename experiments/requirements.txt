@@ -1,0 +1,9 @@
+# Colab already provides all of these. For a local run: pip install -r requirements.txt
+# The exact versions used for each stage are saved to results/env/ (pip freeze) by run_all.
+torch
+transformers
+scikit-learn
+pandas
+numpy
+matplotlib
+pytest  # offline tests only

@@ -1,0 +1,156 @@
+\documentclass{article}
+
+\usepackage[final]{neurips_2019}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\usepackage{comment}
+
+\newcommand{\note}[1]{#1}
+% Instructions: delete every \note and instructions block before submitting.
+\includecomment{instructions}
+% HIDE INSTRUCTIONS: uncomment the next line to remove all instructions from the PDF.
+% \excludecomment{instructions}\renewcommand{\note}[1]{}
+
+\title{
+  Title of your project \\
+  \vspace{1em}
+  \small{\normalfont COMS 4705 Project Proposal}  \\
+  \small{\normalfont \textbf{Keywords:} \textit{keyword1, keyword2, ...}}
+
+}
+
+\author{
+  Name \\
+  Department of Computer Science \\
+  Columbia University \\
+  \texttt{UNI@columbia.edu} \\
+  \And
+  Name \\
+  Department of Computer Science \\
+  Columbia University \\
+  \texttt{UNI@columbia.edu} \\
+% Examples of more authors
+%   \And
+%   Name \\
+%   Department of Computer Science \\
+%   Columbia University \\
+%   \texttt{UNI@columbia.edu}
+}
+
+\begin{document}
+
+\maketitle
+
+% \begin{abstract}
+%   Required for final report
+% \end{abstract}
+
+\note{\begin{center}
+    This template is built on NeurIPS 2019 template\footnote{\url{https://www.overleaf.com/latex/templates/neurips-2019/tprktwxmqmgk}} and adapted from Stanford CS224N Natural Language Processing with Deep Learning
+\end{center}}
+
+\begin{instructions}
+\textbf{About this document.} This is both the proposal template and its instructions. Replace the instructions in each section with your own writing, and delete any remaining instructions before submitting. To hide all instructions at once, uncomment the line marked \texttt{HIDE INSTRUCTIONS} near the top of the \LaTeX{} source. You must use \LaTeX{} for your proposal and future milestones. You may modify this template, but make sure all requested elements are clearly visible so we can grade and give feedback.
+
+Each team of \textbf{two to three students} (individual projects are not permitted) hands in \textbf{one} project proposal, worth 5\% of your grade. \textbf{Page limits are hard cutoffs: we will not grade anything beyond 1 page in the literature review or 2 pages in the project description (references excluded).} Before you start, read the \textit{\textbf{Practical Tips for Final Projects}} document on Canvas and the course website.
+
+\textbf{Title and keywords.} Give your project a title (you can change it later) and 3--5 keywords describing it, such as the main task, training approach, or domain (e.g., \textit{news summarization, finetuning, faithfulness}). If you do not request a mentor, we use the keywords to match you to the best-equipped staff member.
+
+\textbf{Team members.} List the names and UNI@columbia.edu emails of all team members.
+\end{instructions}
+
+\begin{instructions}
+\textbf{Expectations for the final project.}
+\begin{itemize}
+    \item \textbf{Relevance to course material}: your project should build on what you have learned or will learn in this course (i.e., topics related to natural language processing).
+    \item \textbf{Technical component}: your project should involve a substantial technical/programming component appropriate for the last half of the semester. This must include implementing a learned model. For example, fine-tuning a pretrained model with your own training loop, objective, or data pipeline, or implementing the method from a paper, is acceptable; only prompting a model, or only running code from an existing repository unchanged, is not.
+    \item \textbf{Language/code/math data}: your project should involve learning from, making inferences on, or generating (a) human language, (b) code, or (c) written math (i.e., proofs, answers to math questions).
+    \item \textbf{Feasibility}: your project should reflect a sufficient amount of work for the last half of the semester. With 3 people in your group, each member should have the opportunity to contribute to both the technical and written components (i.e., one member cannot only write reports). It should also be feasible with the resources available to you.
+    \item \textbf{Novelty is not required}: your project does not need to explore a completely novel research question or idea. We encourage custom projects that interest you, but you may instead replicate or modify experiments from an existing paper if it meets the criteria above.
+\end{itemize}
+\end{instructions}
+
+\section{Key Information}
+
+\begin{itemize}
+    \item (Optional) External collaborators: \note{Columbia collaborators who are not COMS 4705 students.}
+    \item Mentor: \note{We don't expect you to have one yet; you will be assigned one after we receive your proposal. Write (a) `X has already agreed to be our mentor', (b) `We would like to request X as our mentor', or (c) `We have no particular mentor'.}
+    \item (Optional) Sharing project: \note{Say so if you are sharing this project with another class or with research outside the course.}
+\end{itemize}
+
+\section{Literature review and reflection}
+\note{\textit{0.5--1 page excluding references, 25 points}}
+
+\begin{instructions}
+Before describing your project, read papers related to your topic to learn what has and has not been done. You do not need a precise project idea yet: start with a rough one and sharpen it as you read into the concrete project in Section~\ref{sec:description}.
+\begin{enumerate}
+    \item \textbf{Write down your idea or question} about an NLP topic that interests you: for example, the best approaches to a task (e.g., summarization, question answering), strengths and weaknesses of training algorithms, or ways to mitigate undesirable model behaviors (e.g., biases, hallucinations). Avoid questions that are too broad (``how do language models work?'') or easily answerable (``when was ChatGPT released?''); it should be open-ended or need multiple papers to answer.
+    \item \textbf{Find related work.} You can ask a language model (e.g., ChatGPT, Claude, AI2 ScholarQA at \url{https://scholarqa.allen.ai}), but check that the papers it gives actually exist; models hallucinate papers. You can also search recent work at venues such as COLM, NeurIPS, ICLR, ICML, ACL, and EMNLP. Google Scholar (\url{https://scholar.google.com/}) and arXiv (\url{https://arxiv.org/search/}) aggregate these venues, but watch out for work that is not peer-reviewed. \textit{Tip:} once you find one relevant paper, check its related-work section and the papers that cite it (``Cited by'' on Google Scholar). Search broadly: a cursory skim of the abstracts of many papers is enough to map the area and find the few papers most relevant to your idea.
+    \item \textbf{Refine your question as you read.} You may find directions that interest you more, a finding that already answers your question, or gaps that remain. Record how your question changes, and note resources you could use (datasets, evaluation metrics, baseline methods).
+\end{enumerate}
+Then write the reflection below. Include technical details only when a COMS 4705 classmate would need them to follow your discussion. We grade this section on thoughtful discussion and clear, concise writing.
+\end{instructions}
+
+    \paragraph{Papers you read.}
+        \note{From your search, select the three papers most relevant to your project and read them closely. At least one must be published within the past two years. You do not need to memorize every detail of these papers, but you should internalize each paper's central contribution and how it bears on your research question(s). Cite each paper and summarize it in 2--3 sentences: the primary question it studies and its central findings. What does each paper contribute in the context of the others? Did you find a particular approach or task interesting?}
+
+    \paragraph{Questions.}
+        \note{State your initial and final questions. If your final question differs from the first, briefly explain what in your reading caused the change. It is fine if your question did not change.}
+
+    \paragraph{Positioning and motivating your idea.}
+        \note{In a few sentences, explain where your idea sits relative to the papers you read and why it is worth pursuing. For example, compared to these papers, are you studying a different task, model, algorithm, or question, or extending or replicating an existing result? Why is your question interesting or important? The goal is to show that you understand how your idea relates to existing work.}
+
+\section{Project description}
+\label{sec:description}
+\note{\textit{1--2 pages, 5 points}}
+
+\begin{instructions}
+Describe what you plan to do. It's fine if your project evolves into something different later -- that's a natural part of research -- but lay out a sensible and feasible initial plan. We grade this section on completeness, clarity, and detail.
+\end{instructions}
+
+     \paragraph{Goal.}
+        \note{Turn the final question from your literature review into a concrete goal. If possible, phrase it as a scientific question you are trying to answer -- e.g., whether a particular model or technique performs well at a certain task, whether you can improve a particular model by adding some new variant, or (for theoretical/analytical projects) a hypothesis you seek to confirm or disprove. Otherwise, your goal may be simply to implement a complex neural model and show that it performs well on a given task. Briefly motivate why you chose this goal -- why is it important, interesting, challenging and/or likely to succeed? Also describe any secondary or stretch goals (things you will do if you have time).}
+
+    \paragraph{Task.}
+        \note{Describe the concrete task your goal is about, with an example input and output (if applicable).}
+
+    \paragraph{Data.}
+        \note{Specify the dataset(s) you will use (including size), and describe any preprocessing you plan to do. If you plan to curate your own data, explain how you will collect it and how long you expect it to take. We recommend using an existing dataset if possible, since curating data can be time-consuming and expensive.}
+
+    \paragraph{Methods.}
+        \note{Describe the models and/or techniques you plan to use. If a method is already described in your literature review, you do not need to repeat it; refer back to it instead. If you plan to replicate an existing paper, make clear which parts you will implement yourself and which you will download from elsewhere. If you propose a new approach or a change to an existing one, briefly motivate why you think it will work or what benefits it offers (e.g., better performance on a given metric, more efficient, etc.).}
+
+    \paragraph{Evaluation.}
+        \note{Specify at least one well-defined, numerical, automatic evaluation metric. It is often appropriate to use multiple metrics that account for each other's weaknesses. Justify why your metric(s) are appropriate for what you intend to measure; metrics from the papers you read are a good reference. If you have ideas for qualitative evaluation, describe those too.}
+
+    \paragraph{Baselines.}
+        \note{Describe the methods you will use as baselines. Baselines contextualize your results to show how your approach improves on prior or simpler approaches; methods from related papers can be natural candidates. For example, if you change an existing model finetuned for a task, evaluate the original model to show how your change affects performance. Briefly motivate your choice: are these the best-performing baselines comparable to your approach? What insights does the comparison offer? Make clear whether each baseline will be implemented by you, downloaded from elsewhere, or compared only through previously published scores.}
+
+    \paragraph{Justification.}
+        \note{In one bullet per expectation listed under \emph{Expectations for the final project} at the start of this document (one sentence each), justify how your proposal meets it. Then, in a short paragraph, describe what each team member will tentatively be responsible for (this can change as the project develops), a rough compute estimate (model size and approximate GPU-hours, compared with your GCP credits), and a timeline of what you will have done by each milestone.}
+
+    \bibliographystyle{unsrt}
+    \bibliography{references}
+
+\begin{instructions}
+\section*{Submission and what to expect}
+\textbf{Submission.} \textit{One team member} submits the PDF on Gradescope and \textit{tags all other team members} -- only tagged members receive credit. Also tag the correct pages for each `question' so your proposal is graded correctly. Before submitting, check the page limits: content beyond 1 page in the literature review or 2 pages in the project description will not be graded.
+
+\textbf{Grading and feedback.} Your assigned mentor grades this proposal and all later milestones and gives brief feedback. The more time and thought you put into your proposal, the better the feedback we can give. If there's a problem with your proposed project (e.g., it's not feasible in the given time), we may require a revised proposal; otherwise your project is approved.
+
+\textbf{Compute.} Each student will be allocated Google Cloud Platform (GCP) credits for the final project. We may also provide credits for other platforms and for querying LLMs later in the semester, with instructions for getting started (e.g., requesting GPUs, managing credits).
+
+\textbf{Questions.} To discuss your proposal before submitting, come to any staff member's office hours. For specific feedback on experimental design and research aspects, go to the office hours of a PhD student TA or John.
+\end{instructions}
+
+\end{document}

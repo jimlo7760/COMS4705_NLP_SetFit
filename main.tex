@@ -1,0 +1,163 @@
+\documentclass{article}
+\usepackage[final]{neurips_2019}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url,booktabs,amsmath,amsfonts,microtype,graphicx,xcolor}
+\usepackage{enumitem}
+\setcitestyle{numbers,square}
+\renewcommand{\ttdefault}{pcr}
+\setlist[itemize]{leftmargin=*,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlength{\emergencystretch}{2em}
+\makeatletter
+\renewcommand{\@noticestring}{Columbia COMS 4705: Natural Language Processing, Fall 2026.}
+% Preserve the template typography and spacing, without decorative title rules.
+\renewcommand{\@toptitlebar}{\vskip 0.25in\vskip -\parskip}
+\renewcommand{\@bottomtitlebar}{\vskip 0.29in\vskip -\parskip\vskip 0.09in}
+\makeatother
+\title{Few-Shot Banking Customer Intent Classification:\\A Controlled Study of SetFit\\[0.5em]
+\small\normalfont COMS 4705 Project Proposal\\
+\small\normalfont\textbf{Keywords:} \textit{intent detection, few-shot classification, contrastive learning, SetFit}}
+\author{Tian Zhou\\Columbia University\\\texttt{tz2751@columbia.edu}
+\And Liping Zhu\\Columbia University\\\texttt{lz3147@columbia.edu}
+\And Jim Lu\\Columbia University\\\texttt{yl6325@columbia.edu}}
+\begin{document}
+\maketitle
+
+\section{Key Information}
+\begin{itemize}
+\item Mentor: We have no particular mentor.
+\end{itemize}
+
+\section{Literature review and reflection}
+\paragraph{Papers you read.}
+\textbf{Efficient Few-Shot Learning Without Prompts} \cite{tunstall2022setfit} asks how to adapt text classifiers with few labeled examples without prompt design or very large generative models. SetFit first tunes a Sentence Transformer on same-label and different-label sentence pairs, then fits logistic regression on the resulting embeddings; the paper reports strong few-shot results across classification tasks and repeated training samples. This provides our two-stage method and motivates testing whether representation adaptation adds value beyond an already pretrained encoder.
+
+
+
+\textbf{Efficient Intent Detection with Dual Sentence Encoders} \cite{casanueva2020intent} studies resource-efficient intent detection and introduces BANKING77, a single-domain dataset with 77 fine-grained banking intents. On BANKING77, fixed USE/ConveRT encodings with a trainable classifier were comparable to fine-tuned BERT-Large at 10--30 examples per intent, while BERT led with full data. Ma et al.\ \cite{ma2022encoding} likewise find that general-purpose sentence representations can perform strongly without intent-specific finetuning. These findings motivate a matched frozen-encoder baseline.
+
+
+\textbf{Clear Up Confusion} \cite{zhang2025confusion}, published at COLING 2025, addresses ambiguous fine-grained intents through iterative LLM-based data generation with contrastive feedback. Its focus on distinctions between neighboring labels motivates our analysis of frequently confused intents. We study these distinctions using the existing labeled requests and may also examine hard-negative sampling.
+
+\paragraph{Questions.}
+Our initial question was whether a small pretrained model can perform text classification with limited labeled data, using banking customer intent detection as a case study. The literature led us to a more focused research question: \emph{When is task-specific representation adaptation worth its additional training cost for low-resource, fine-grained intent classification?} We ask whether its gains vary with training-set size, whether they remain consistent across sampled training sets, and whether they reduce errors between easily confused customer intents.
+
+
+
+\paragraph{Positioning and motivating your idea.}
+Existing work offers two reasons to examine the value of task-specific adaptation: SetFit demonstrates the potential of pairwise fine-tuning for few-shot classification, while sentence-encoder studies show that pretrained representations can already provide strong intent-detection performance \cite{tunstall2022setfit,casanueva2020intent,ma2022encoding}. Building on these findings, we will reproduce SetFit's two-stage training principle on BANKING77 and extend the reproduction through matched baseline comparisons, training-set size comparisons, and cost and error analysis. This study can inform whether additional finetuning offers sufficient benefits over a simpler frozen model when labeled customer requests and training resources are limited.
+
+
+\newpage
+\section{Project description}
+\label{sec:description}
+
+\paragraph{Goal.}
+We aim to determine when pairwise adaptation offers a useful accuracy--cost tradeoff for banking customer intent classification. We will compare SetFit with frozen representations and supervised cross-entropy tuning at 8 and 32 training examples per intent, measuring macro-F1 differences, variation across samples, and training cost. We may also include an optional comparison of random and hard negative pairs with the same pair count and update cap.
+
+\paragraph{Task.}
+We study closed-set, single-label English intent classification: an input such as \texttt{My new card still has not arrived} receives the label \texttt{card\_arrival}. The task assigns each request to one of 77 customer-request categories, all represented in training.
+
+\paragraph{Data.}
+BANKING77 \cite{casanueva2020intent,bankinghub} contains 77 customer-request categories, with 10,003 training and 3,080 test rows, released under CC BY 4.0. Our preliminary CSV audit compares exact strings after removing leading/trailing whitespace. We found four redundant training rows with consistent labels and six distinct texts shared across the splits. We keep one copy per training text and remove the six overlapping training texts, leaving 9,993 rows. We identify overlap by matching text hashes and reserve test labels for final evaluation. We retain all 3,080 official test rows and document one repeated test text.
+
+For each class of size $n_c$, we assign $\lfloor0.1n_c\rfloor$ rows to validation using seed 2026: 965 total, leaving 9,028 candidate training rows and at least 32 per class. For each seed in $\{0,11,22,33\}$, we shuffle each class once and select its first $k\in\{8,32\}$ examples (616/2,464 total). We use seed 0 for tuning and seeds 11, 22, and 33 for final runs; each 8-shot set is contained in its 32-shot set. All methods share these samples, and we construct training batches and pairs exclusively from the selected subset. Selection additionally uses the 965 labeled validation rows (about 12.5 per class), so this is a tuned few-shot setting rather than true few-shot learning \cite{perez2021true}. We preserve punctuation, use the model's tokenizer with dynamic padding, cap inputs at 128 tokens, and report truncation frequency.
+
+\paragraph{Methods.}
+We use \texttt{sentence-transformers/all-MiniLM-L6-v2} \cite{minilmhub}, a 22.7M-parameter encoder with attention-masked mean pooling and unit-normalized 384-dimensional sentence vectors, and compare three training approaches:
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.15\linewidth}p{0.78\linewidth}@{}}
+\toprule
+Method & Training and prediction\\
+\midrule
+Frozen+LR & We freeze the encoder and fit multinomial logistic regression (LR).\\
+CE tuning & We jointly tune the encoder and a 77-way linear head with cross-entropy.\\
+SetFit & We tune the encoder on sentence pairs, freeze it, recompute training embeddings, and fit the same LR as Frozen+LR.\\
+\bottomrule
+\end{tabular}
+\end{center}
+For SetFit, we sample four distinct same-label partners, excluding the anchor itself, and four distinct different-label partners for each training sentence. For each negative partner, we sample another class uniformly, then a sentence within it, resampling repeated partners. We shuffle the resulting $8(77k)$ pairs (4,928/19,712 at 8/32-shot); reversed pairs may both occur. With $z_i=1$ for same-label pairs and $z_i=0$ otherwise, we optimize cosine-similarity mean squared error over batches of $B$ pairs:
+\[
+\mathcal L_{\mathrm{pair}}=\frac{1}{B}\sum_{i=1}^{B}\bigl(\cos(f_\theta(x_i),f_\theta(x'_i))-z_i\bigr)^2.
+\]
+We train both encoder-tuning methods with AdamW, weight decay 0.01, gradient clipping 1.0, 10\% linear warmup followed by linear decay, FP16, and batch size 32 (sentences for CE; pairs for SetFit). We cap runs at 300/1,000 updates for 8/32-shot and validate every 50/100 updates. We keep the highest validation macro-F1 checkpoint, choosing the earlier one in a tie. For SetFit validation, we fit LR using the current encoder's training embeddings and training labels. LR uses \texttt{lbfgs}, $C=1$, an intercept, and at most 2,000 iterations. With seed 0, we select a learning rate from $\{10^{-5},3\!\times\!10^{-5}\}$ for each tuning method and $k$: eight tuning runs with equal search budgets. We fix these choices before the final three seeds and measure actual cost, since SetFit processes two texts per pair.
+
+We use SetFit's notebook and few-shot scripts \cite{setfitcode} as implementation references and for a small pilot reproduction. Building on them, we implement PyTorch training loops, the fixed pair sampler/loss, shared data splits, and evaluation scripts. We reuse pretrained weights/tokenizers and standard LR/metric implementations. In the optional variant, we replace two random negatives per anchor with its nearest different-label neighbors within the selected training subset under the initial frozen encoder, retaining distinct partners and the same pair count and update cap.
+
+\paragraph{Evaluation.}
+We use macro-F1 as the primary metric: the unweighted mean of the 77 class F1s, with undefined F1 set to zero. It gives each intent equal weight; accuracy and per-class recall provide complementary views of overall and class-level performance. We also measure training wall time and peak GPU memory. We report means, sample standard deviations, and per-seed SetFit-minus-baseline differences across three paired seeds, which vary both training samples and optimization. We select hyperparameters and checkpoints on validation data before evaluating each locked model once on the official test set. We retain those predictions for subsequent analysis and keep model selection independent of test results.
+
+We preselect five unordered intent pairs using the largest $C_{ij}+C_{ji}$ counts in the seed-0 frozen baseline's 8-shot validation confusion matrix, breaking ties alphabetically. On test, we report each pair's bidirectional confusion rate, with the number of gold examples in either class as denominator, alongside global scores. For seed 11, we sample up to ten examples from each Frozen/SetFit correctness combination using seed 2026. We examine close-intent ambiguity, paraphrase/wording, missing information, and other errors, using examples to describe where adaptation helps or hurts.
+
+\paragraph{Baselines.}
+We implement and run Frozen+LR and CE tuning under the same data protocol. Frozen+LR isolates SetFit's representation-training stage by sharing its initial encoder and classifier settings. CE provides a comparison with conventional supervised finetuning of the complete classifier. We interpret that comparison at the pipeline level because the classifier-training procedure also differs. We use our own baseline runs for numerical comparisons and published results to contextualize the task.
+
+\paragraph{Justification.}
+\begin{itemize}
+\item \textbf{Relevance to course material:} The project builds on sentence representations and optimization (Lecs. 3--4), classification and evaluation (Lec. 5), Transformer encoders (Lec. 8), and pretrained-model finetuning (Lec. 13).
+\item \textbf{Technical component:} We implement encoder-training loops, pair sampling and loss, supervised baselines, and a shared data/evaluation pipeline, using pretrained weights and standard classifier/metric libraries.
+\item \textbf{Language/code/math data:} We learn from English banking customer requests and predict one of 77 intent labels for each text.
+\item \textbf{Feasibility:} A 22.7M-parameter encoder, two training sizes, and capped runs target 10 core GPU-hours on one GPU; each member contributes code and writing.
+\item \textbf{Novelty is not required:} We reproduce SetFit's two-stage principle and extend it with matched controls, nested sample sizes, measured cost, and confusion/error analysis.
+\end{itemize}
+
+\paragraph{Team, compute, and timeline.}
+Tian Zhou will implement encoder training and CE; Liping Zhu will handle the data audit, splits, pair sampler, and optional variant; Jim Lu will implement Frozen+LR, metrics, timing, and error analysis. Each member will write the corresponding methods/results and review another member's code.
+
+We plan 18 final method--size--seed settings (12 encoder trainings and six frozen-head fits), plus eight tuning trainings. On one T4 16GB or L4 24GB, we allocate 2 GPU-hours to tuning, 4 to final training/checkpoint validation, 1 to remaining embedding/test evaluation, and 3 to setup/debugging: \textbf{10 GPU-hours}, with up to 2 additional hours for six optional runs. We will verify these planning estimates by timing one CE and one SetFit run within the tuning budget. If the projected core exceeds 10 hours, we will prioritize all three methods/seeds at 8-shot and then add 32-shot. We budget \textbf{USD 25} from pooled GCP credits, assuming at most USD 2/hour for 12 hours plus USD 1 storage; we will check the actual instance price against this allowance. We use local model inference throughout.
+
+Our targets are \textbf{Nov. 23}: audited splits, three working methods, tuning, and pilot timing; \textbf{Dec. 5}: final runs and locked test predictions; \textbf{Dec. 12}: confusion/error analysis and optional sampling experiment; \textbf{Dec. 17}: report, code, environment lockfile, and run manifests.
+
+\clearpage
+\begin{thebibliography}{9}
+\bibitem{tunstall2022setfit}
+Lewis Tunstall, Nils Reimers, Unso Eun Seo Jo, Luke Bates, Daniel Korat, Moshe Wasserblat, and Oren Pereg.
+Efficient Few-Shot Learning Without Prompts. \emph{arXiv:2209.11055}, 2022.
+\url{https://arxiv.org/abs/2209.11055}.
+
+\bibitem{casanueva2020intent}
+I\~nigo Casanueva, Tadas Tem\v{c}inas, Daniela Gerz, Matthew Henderson, and Ivan Vuli\'c.
+Efficient Intent Detection with Dual Sentence Encoders.
+In \emph{NLP for Conversational AI}, pages 38--45, 2020.
+\url{https://aclanthology.org/2020.nlp4convai-1.5/}.
+
+\bibitem{ma2022encoding}
+Tingting Ma, Qianhui Wu, Zhiwei Yu, Tiejun Zhao, and Chin-Yew Lin.
+On the Effectiveness of Sentence Encoding for Intent Detection Meta-Learning.
+In \emph{NAACL-HLT}, pages 3806--3818, 2022.
+\url{https://aclanthology.org/2022.naacl-main.279/}.
+
+\bibitem{zhang2025confusion}
+Feng Zhang, Wei Chen, Meng Gao, Fei Ding, Tengjiao Wang, Jiahui Yao, and Jiabin Zheng.
+Clear Up Confusion: Iterative Differential Generation for Fine-grained Intent Detection with Contrastive Feedback.
+In \emph{COLING}, pages 2207--2221, 2025.
+\url{https://aclanthology.org/2025.coling-main.151/}.
+
+
+\bibitem{bankinghub}
+PolyAI. BANKING77: dataset and author-released CSV files, 2020.
+\url{https://huggingface.co/datasets/PolyAI/banking77};
+\url{https://github.com/PolyAI-LDN/task-specific-datasets/tree/master/banking_data}.
+
+\bibitem{minilmhub}
+Sentence Transformers. all-MiniLM-L6-v2: model card.
+\url{https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2}.
+Accessed November 11, 2026.
+
+\bibitem{setfitcode}
+Hugging Face. SetFit: official code, notebooks, and few-shot scripts.
+\url{https://github.com/huggingface/setfit};
+\url{https://huggingface.co/docs/setfit/quickstart}.
+Accessed November 11, 2026.
+
+
+\bibitem{perez2021true}
+Ethan Perez, Douwe Kiela, and Kyunghyun Cho.
+True Few-Shot Learning with Language Models.
+In \emph{NeurIPS}, 2021. \url{https://arxiv.org/abs/2105.11447}.
+
+\end{thebibliography}
+\end{document}
+

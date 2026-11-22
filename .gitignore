@@ -1,0 +1,26 @@
+# Experiment outputs: written next to experiments/ on Colab or the VM, never committed.
+# (Bring results back as results.tar.gz; use `git add -f` if you deliberately want one in git.)
+/data/
+/results/
+*.tar.gz
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# macOS
+.DS_Store
