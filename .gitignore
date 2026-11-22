@@ -1,8 +1,6 @@
 # Experiment outputs: written next to experiments/ on Colab or the VM, never committed.
 # (Bring results back as results.tar.gz; use `git add -f` if you deliberately want one in git.)
-/data/
-/results/
-*.tar.gz
+
 
 # Python
 __pycache__/

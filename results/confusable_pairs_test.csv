@@ -1,0 +1,91 @@
+method,shots_per_intent,seed,pair,confusions,gold_in_pair,rate
+CE tuning,32,11,declined_cash_withdrawal / wrong_amount_of_cash_received,5,80,0.0625
+CE tuning,32,11,top_up_failed / top_up_reverted,7,80,0.0875
+CE tuning,32,11,cash_withdrawal_not_recognised / pending_cash_withdrawal,5,80,0.0625
+CE tuning,32,11,balance_not_updated_after_bank_transfer / transfer_timing,6,80,0.075
+CE tuning,32,11,beneficiary_not_allowed / failed_transfer,18,80,0.225
+CE tuning,32,22,declined_cash_withdrawal / wrong_amount_of_cash_received,6,80,0.075
+CE tuning,32,22,top_up_failed / top_up_reverted,4,80,0.05
+CE tuning,32,22,cash_withdrawal_not_recognised / pending_cash_withdrawal,1,80,0.0125
+CE tuning,32,22,balance_not_updated_after_bank_transfer / transfer_timing,7,80,0.0875
+CE tuning,32,22,beneficiary_not_allowed / failed_transfer,12,80,0.15
+CE tuning,32,33,declined_cash_withdrawal / wrong_amount_of_cash_received,3,80,0.0375
+CE tuning,32,33,top_up_failed / top_up_reverted,6,80,0.075
+CE tuning,32,33,cash_withdrawal_not_recognised / pending_cash_withdrawal,0,80,0.0
+CE tuning,32,33,balance_not_updated_after_bank_transfer / transfer_timing,10,80,0.125
+CE tuning,32,33,beneficiary_not_allowed / failed_transfer,20,80,0.25
+CE tuning,8,11,declined_cash_withdrawal / wrong_amount_of_cash_received,4,80,0.05
+CE tuning,8,11,top_up_failed / top_up_reverted,32,80,0.4
+CE tuning,8,11,cash_withdrawal_not_recognised / pending_cash_withdrawal,8,80,0.1
+CE tuning,8,11,balance_not_updated_after_bank_transfer / transfer_timing,10,80,0.125
+CE tuning,8,11,beneficiary_not_allowed / failed_transfer,21,80,0.2625
+CE tuning,8,22,declined_cash_withdrawal / wrong_amount_of_cash_received,5,80,0.0625
+CE tuning,8,22,top_up_failed / top_up_reverted,2,80,0.025
+CE tuning,8,22,cash_withdrawal_not_recognised / pending_cash_withdrawal,2,80,0.025
+CE tuning,8,22,balance_not_updated_after_bank_transfer / transfer_timing,7,80,0.0875
+CE tuning,8,22,beneficiary_not_allowed / failed_transfer,21,80,0.2625
+CE tuning,8,33,declined_cash_withdrawal / wrong_amount_of_cash_received,3,80,0.0375
+CE tuning,8,33,top_up_failed / top_up_reverted,33,80,0.4125
+CE tuning,8,33,cash_withdrawal_not_recognised / pending_cash_withdrawal,5,80,0.0625
+CE tuning,8,33,balance_not_updated_after_bank_transfer / transfer_timing,2,80,0.025
+CE tuning,8,33,beneficiary_not_allowed / failed_transfer,29,80,0.3625
+Frozen+LR,32,11,declined_cash_withdrawal / wrong_amount_of_cash_received,7,80,0.0875
+Frozen+LR,32,11,top_up_failed / top_up_reverted,4,80,0.05
+Frozen+LR,32,11,cash_withdrawal_not_recognised / pending_cash_withdrawal,3,80,0.0375
+Frozen+LR,32,11,balance_not_updated_after_bank_transfer / transfer_timing,7,80,0.0875
+Frozen+LR,32,11,beneficiary_not_allowed / failed_transfer,11,80,0.1375
+Frozen+LR,32,22,declined_cash_withdrawal / wrong_amount_of_cash_received,6,80,0.075
+Frozen+LR,32,22,top_up_failed / top_up_reverted,5,80,0.0625
+Frozen+LR,32,22,cash_withdrawal_not_recognised / pending_cash_withdrawal,1,80,0.0125
+Frozen+LR,32,22,balance_not_updated_after_bank_transfer / transfer_timing,7,80,0.0875
+Frozen+LR,32,22,beneficiary_not_allowed / failed_transfer,6,80,0.075
+Frozen+LR,32,33,declined_cash_withdrawal / wrong_amount_of_cash_received,4,80,0.05
+Frozen+LR,32,33,top_up_failed / top_up_reverted,3,80,0.0375
+Frozen+LR,32,33,cash_withdrawal_not_recognised / pending_cash_withdrawal,0,80,0.0
+Frozen+LR,32,33,balance_not_updated_after_bank_transfer / transfer_timing,9,80,0.1125
+Frozen+LR,32,33,beneficiary_not_allowed / failed_transfer,12,80,0.15
+Frozen+LR,8,11,declined_cash_withdrawal / wrong_amount_of_cash_received,5,80,0.0625
+Frozen+LR,8,11,top_up_failed / top_up_reverted,16,80,0.2
+Frozen+LR,8,11,cash_withdrawal_not_recognised / pending_cash_withdrawal,12,80,0.15
+Frozen+LR,8,11,balance_not_updated_after_bank_transfer / transfer_timing,10,80,0.125
+Frozen+LR,8,11,beneficiary_not_allowed / failed_transfer,17,80,0.2125
+Frozen+LR,8,22,declined_cash_withdrawal / wrong_amount_of_cash_received,8,80,0.1
+Frozen+LR,8,22,top_up_failed / top_up_reverted,9,80,0.1125
+Frozen+LR,8,22,cash_withdrawal_not_recognised / pending_cash_withdrawal,3,80,0.0375
+Frozen+LR,8,22,balance_not_updated_after_bank_transfer / transfer_timing,5,80,0.0625
+Frozen+LR,8,22,beneficiary_not_allowed / failed_transfer,7,80,0.0875
+Frozen+LR,8,33,declined_cash_withdrawal / wrong_amount_of_cash_received,10,80,0.125
+Frozen+LR,8,33,top_up_failed / top_up_reverted,28,80,0.35
+Frozen+LR,8,33,cash_withdrawal_not_recognised / pending_cash_withdrawal,4,80,0.05
+Frozen+LR,8,33,balance_not_updated_after_bank_transfer / transfer_timing,8,80,0.1
+Frozen+LR,8,33,beneficiary_not_allowed / failed_transfer,21,80,0.2625
+SetFit,32,11,declined_cash_withdrawal / wrong_amount_of_cash_received,5,80,0.0625
+SetFit,32,11,top_up_failed / top_up_reverted,3,80,0.0375
+SetFit,32,11,cash_withdrawal_not_recognised / pending_cash_withdrawal,2,80,0.025
+SetFit,32,11,balance_not_updated_after_bank_transfer / transfer_timing,9,80,0.1125
+SetFit,32,11,beneficiary_not_allowed / failed_transfer,12,80,0.15
+SetFit,32,22,declined_cash_withdrawal / wrong_amount_of_cash_received,6,80,0.075
+SetFit,32,22,top_up_failed / top_up_reverted,3,80,0.0375
+SetFit,32,22,cash_withdrawal_not_recognised / pending_cash_withdrawal,3,80,0.0375
+SetFit,32,22,balance_not_updated_after_bank_transfer / transfer_timing,8,80,0.1
+SetFit,32,22,beneficiary_not_allowed / failed_transfer,6,80,0.075
+SetFit,32,33,declined_cash_withdrawal / wrong_amount_of_cash_received,4,80,0.05
+SetFit,32,33,top_up_failed / top_up_reverted,4,80,0.05
+SetFit,32,33,cash_withdrawal_not_recognised / pending_cash_withdrawal,2,80,0.025
+SetFit,32,33,balance_not_updated_after_bank_transfer / transfer_timing,10,80,0.125
+SetFit,32,33,beneficiary_not_allowed / failed_transfer,13,80,0.1625
+SetFit,8,11,declined_cash_withdrawal / wrong_amount_of_cash_received,5,80,0.0625
+SetFit,8,11,top_up_failed / top_up_reverted,18,80,0.225
+SetFit,8,11,cash_withdrawal_not_recognised / pending_cash_withdrawal,11,80,0.1375
+SetFit,8,11,balance_not_updated_after_bank_transfer / transfer_timing,9,80,0.1125
+SetFit,8,11,beneficiary_not_allowed / failed_transfer,16,80,0.2
+SetFit,8,22,declined_cash_withdrawal / wrong_amount_of_cash_received,10,80,0.125
+SetFit,8,22,top_up_failed / top_up_reverted,7,80,0.0875
+SetFit,8,22,cash_withdrawal_not_recognised / pending_cash_withdrawal,5,80,0.0625
+SetFit,8,22,balance_not_updated_after_bank_transfer / transfer_timing,5,80,0.0625
+SetFit,8,22,beneficiary_not_allowed / failed_transfer,8,80,0.1
+SetFit,8,33,declined_cash_withdrawal / wrong_amount_of_cash_received,9,80,0.1125
+SetFit,8,33,top_up_failed / top_up_reverted,30,80,0.375
+SetFit,8,33,cash_withdrawal_not_recognised / pending_cash_withdrawal,5,80,0.0625
+SetFit,8,33,balance_not_updated_after_bank_transfer / transfer_timing,8,80,0.1
+SetFit,8,33,beneficiary_not_allowed / failed_transfer,19,80,0.2375

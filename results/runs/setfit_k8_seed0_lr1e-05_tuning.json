@@ -1,0 +1,242 @@
+{
+  "run_id": "setfit_k8_seed0_lr1e-05_tuning",
+  "phase": "tuning",
+  "method": "SetFit",
+  "shots_per_intent": 8,
+  "sample_and_optimizer_seed": 0,
+  "learning_rate": 1e-05,
+  "head_lr": null,
+  "max_updates": 300,
+  "eval_every": 50,
+  "batch_size": 32,
+  "n_train": 616,
+  "n_val": 965,
+  "n_test": null,
+  "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+  "model_commit": null,
+  "amp_fp16": true,
+  "truncation_rate": {
+    "train": 0.0,
+    "val": 0.0,
+    "test": null
+  },
+  "created_utc": "2026-11-22T18:13:30+00:00",
+  "env": {
+    "python": "3.10.12",
+    "platform": "Linux-6.8.0-1073-gcp-x86_64-with-glibc2.35",
+    "torch": "2.14.1+cu130",
+    "device": "cuda",
+    "code_fingerprint": "f84d502ab77e561e",
+    "gpu": "NVIDIA L4",
+    "cuda": "13.0",
+    "gpu_memory_gb": 22.0,
+    "transformers": "5.20.2",
+    "sklearn": "1.7.2",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3"
+  },
+  "test_macro_f1": null,
+  "test_accuracy": null,
+  "test_per_class_recall": null,
+  "val_macro_f1": 0.7973532673139841,
+  "val_accuracy": 0.7906735751295336,
+  "best_step": 100,
+  "best_val_macro_f1": 0.7973532673139841,
+  "n_pairs": 4928,
+  "lr_checkpoint_fits_expected_max": 6,
+  "lr_checkpoint_fits_observed": 6,
+  "final_classifier": {
+    "lr_n_iter": 11,
+    "lr_converged": true
+  },
+  "timing": {
+    "training_wall_sec_total": 17.5671,
+    "pair_build_sec": 0.0237,
+    "encoder_update_sec": 11.8975,
+    "checkpoint_train_embedding_sec": 0.7014,
+    "checkpoint_lr_fit_sec": 2.3861,
+    "checkpoint_validation_sec": 1.8473,
+    "final_train_embedding_sec": 0.15,
+    "final_lr_fit_sec": 0.518,
+    "test_inference_sec_separate": null
+  },
+  "peak_gpu_memory_mb": 961.3,
+  "history": [
+    {
+      "step": 50,
+      "train_loss": 0.12969422325491906,
+      "val_macro_f1": 0.7748345061009428,
+      "val_accuracy": 0.7740932642487046,
+      "lr": 9.25925925925926e-06,
+      "lr_n_iter": 10,
+      "lr_converged": true
+    },
+    {
+      "step": 100,
+      "train_loss": 0.11449921518564224,
+      "val_macro_f1": 0.7973532673139841,
+      "val_accuracy": 0.7906735751295336,
+      "lr": 7.4074074074074075e-06,
+      "lr_n_iter": 11,
+      "lr_converged": true
+    },
+    {
+      "step": 150,
+      "train_loss": 0.09847039043903351,
+      "val_macro_f1": 0.7922252980380996,
+      "val_accuracy": 0.7875647668393783,
+      "lr": 5.555555555555557e-06,
+      "lr_n_iter": 11,
+      "lr_converged": true
+    },
+    {
+      "step": 200,
+      "train_loss": 0.08693283967673779,
+      "val_macro_f1": 0.7891879804960522,
+      "val_accuracy": 0.783419689119171,
+      "lr": 3.7037037037037037e-06,
+      "lr_n_iter": 11,
+      "lr_converged": true
+    },
+    {
+      "step": 250,
+      "train_loss": 0.08223953627049924,
+      "val_macro_f1": 0.7903053371687578,
+      "val_accuracy": 0.7854922279792746,
+      "lr": 1.8518518518518519e-06,
+      "lr_n_iter": 11,
+      "lr_converged": true
+    },
+    {
+      "step": 300,
+      "train_loss": 0.08808887742459774,
+      "val_macro_f1": 0.786738389231151,
+      "val_accuracy": 0.7813471502590673,
+      "lr": 0.0,
+      "lr_n_iter": 11,
+      "lr_converged": true
+    }
+  ],
+  "loss_curve": [
+    [
+      10,
+      0.1358129523694515
+    ],
+    [
+      20,
+      0.1259829096496105
+    ],
+    [
+      30,
+      0.12810071110725402
+    ],
+    [
+      40,
+      0.13539541214704515
+    ],
+    [
+      50,
+      0.12317913100123405
+    ],
+    [
+      60,
+      0.12584010362625123
+    ],
+    [
+      70,
+      0.12053703218698501
+    ],
+    [
+      80,
+      0.1111478015780449
+    ],
+    [
+      90,
+      0.10875464081764222
+    ],
+    [
+      100,
+      0.10621649771928787
+    ],
+    [
+      110,
+      0.09494169577956199
+    ],
+    [
+      120,
+      0.1024596206843853
+    ],
+    [
+      130,
+      0.09776915982365608
+    ],
+    [
+      140,
+      0.10421174094080925
+    ],
+    [
+      150,
+      0.09296973496675491
+    ],
+    [
+      160,
+      0.08899771422147751
+    ],
+    [
+      170,
+      0.08441327475011348
+    ],
+    [
+      180,
+      0.08115156702697277
+    ],
+    [
+      190,
+      0.09031812287867069
+    ],
+    [
+      200,
+      0.08978351950645447
+    ],
+    [
+      210,
+      0.07687836140394211
+    ],
+    [
+      220,
+      0.08162285313010216
+    ],
+    [
+      230,
+      0.09834365472197533
+    ],
+    [
+      240,
+      0.07246031574904918
+    ],
+    [
+      250,
+      0.08189249634742737
+    ],
+    [
+      260,
+      0.08369710892438889
+    ],
+    [
+      270,
+      0.08682895749807358
+    ],
+    [
+      280,
+      0.09508483037352562
+    ],
+    [
+      290,
+      0.08566550873219966
+    ],
+    [
+      300,
+      0.08916798159480095
+    ]
+  ]
+}

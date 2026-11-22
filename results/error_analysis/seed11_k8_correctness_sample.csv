@@ -1,0 +1,41 @@
+cell,draw,row_id,text,gold,frozen_pred,setfit_pred
+both_right,1,92,Can you explain your exchange rate policy to me?,exchange_rate,exchange_rate,exchange_rate
+both_right,2,1076,I deposited cash this morning and I am still waiting,balance_not_updated_after_cheque_or_cash_deposit,balance_not_updated_after_cheque_or_cash_deposit,balance_not_updated_after_cheque_or_cash_deposit
+both_right,3,515,How old do my children need to be to open an account?,age_limit,age_limit,age_limit
+both_right,4,1952,My card has been swallowed by an ATM,card_swallowed,card_swallowed,card_swallowed
+both_right,5,2573,Why was the exchange rate different when I withdrew my cash?,wrong_exchange_rate_for_cash_withdrawal,wrong_exchange_rate_for_cash_withdrawal,wrong_exchange_rate_for_cash_withdrawal
+both_right,6,1118,What is the payment in my account that I did not do?,card_payment_not_recognised,card_payment_not_recognised,card_payment_not_recognised
+both_right,7,242,Do you support all fiat currencies?,fiat_currency_support,fiat_currency_support,fiat_currency_support
+both_right,8,1424,"The transactions showing up are strange, I think my card was used without me knowing.",compromised_card,compromised_card,compromised_card
+both_right,9,1131,Where can I go to modify my detail?,edit_personal_details,edit_personal_details,edit_personal_details
+both_right,10,1966,Why is there more then one charge on my card I only paid for one not twice how can I fix this?,transaction_charged_twice,transaction_charged_twice,transaction_charged_twice
+setfit_fixes,1,2154,I need a new PIN.,change_pin,get_physical_card,change_pin
+setfit_fixes,2,1770,"I asked for a refund last week but nothing has happened yet, can you help me please?",Refund_not_showing_up,request_refund,Refund_not_showing_up
+setfit_fixes,3,807,There is an unauthorized fee.,card_payment_fee_charged,transfer_fee_charged,card_payment_fee_charged
+setfit_fixes,4,283,How long will it take to get to me?,card_delivery_estimate,transfer_timing,card_delivery_estimate
+setfit_fixes,5,2424,I need a few more physical cards.,getting_spare_card,disposable_card_limits,getting_spare_card
+setfit_fixes,6,2684,When will my balance update after a transfer?,balance_not_updated_after_bank_transfer,transfer_timing,balance_not_updated_after_bank_transfer
+setfit_fixes,7,2641,"Heyy I tried to top up with my card today but it failed! I just got the couple days before but it has worked last time. What's going on, can you double check please?",top_up_failed,card_not_working,top_up_failed
+setfit_fixes,8,1774,"Hi, As suggested by you, i have asked the seller to initiate the refund, it has been a week and i haven't received my money. Please advise.",Refund_not_showing_up,request_refund,Refund_not_showing_up
+setfit_fixes,9,265,What currencies are used in your exchange?,fiat_currency_support,exchange_rate,fiat_currency_support
+setfit_fixes,10,816,I made a card payment and a fee is showing up?,card_payment_fee_charged,card_payment_not_recognised,card_payment_fee_charged
+setfit_breaks,1,630,Please tell me about SWIFT transfers at this bank.,top_up_by_bank_transfer_charge,top_up_by_bank_transfer_charge,transfer_into_account
+setfit_breaks,2,2575,Will there be additional costs of I make a withdrawal from a local ATM of British pounds? I need some cash to feel comfortable on the journey home,wrong_exchange_rate_for_cash_withdrawal,wrong_exchange_rate_for_cash_withdrawal,atm_support
+setfit_breaks,3,1401,someone is using my account,compromised_card,compromised_card,terminate_account
+setfit_breaks,4,613,Will there be any charges for money received?,top_up_by_bank_transfer_charge,top_up_by_bank_transfer_charge,transfer_fee_charged
+setfit_breaks,5,1052,I made a deposit this morning but it is still pending?,balance_not_updated_after_cheque_or_cash_deposit,balance_not_updated_after_cheque_or_cash_deposit,pending_card_payment
+setfit_breaks,6,280,I need my card now!,card_delivery_estimate,card_delivery_estimate,order_physical_card
+setfit_breaks,7,2351,How does a transfer work?,transfer_into_account,transfer_into_account,transfer_timing
+setfit_breaks,8,1823,My card was not accepted.,declined_card_payment,declined_card_payment,card_acceptance
+setfit_breaks,9,20,"I did not get my card yet, is it lost?",card_arrival,card_arrival,lost_or_stolen_card
+setfit_breaks,10,218,"Hi,I tried to get some money out but the machine was not working .The transaction still seems in progress! Can you please check what's going on.I don't want to be charged for money that I did not received.",pending_cash_withdrawal,pending_cash_withdrawal,transfer_not_received_by_recipient
+both_wrong,1,857,I need to find out why my transfer didn't get there.,transfer_not_received_by_recipient,failed_transfer,failed_transfer
+both_wrong,2,1412,How can I stop fraud on my account right now?,compromised_card,terminate_account,terminate_account
+both_wrong,3,2597,I used the ATM machine to get money out for Holiday shopping and saw the outrageous charges. Why is that? I would not have used the ATM if I had known!,wrong_exchange_rate_for_cash_withdrawal,cash_withdrawal_charge,cash_withdrawal_charge
+both_wrong,4,3047,"I'm not in the UK, is it possible for me to still get a card?",country_support,order_physical_card,order_physical_card
+both_wrong,5,1721,Good morning. I tried to make a purchase with my credit card last night and again this morning. Both times it was declined. Can you investigate?,declined_transfer,declined_card_payment,declined_card_payment
+both_wrong,6,2735,i think someone is using my card to withdraw money. Someone stole my wallet. What can I do? it is urgent.,cash_withdrawal_not_recognised,lost_or_stolen_card,lost_or_stolen_card
+both_wrong,7,2758,A cash withdrawal is showing up that I didn't do.,cash_withdrawal_not_recognised,pending_cash_withdrawal,pending_cash_withdrawal
+both_wrong,8,991,Can I make online purchases with my card?,card_acceptance,order_physical_card,order_physical_card
+both_wrong,9,2172,What's the deal with no cryptocurrency on your app?,beneficiary_not_allowed,exchange_via_app,exchange_via_app
+both_wrong,10,2669,I don't think my top up is working correctly,top_up_failed,pending_top_up,top_up_reverted

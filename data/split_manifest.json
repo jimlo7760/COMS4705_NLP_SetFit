@@ -1,0 +1,50 @@
+{
+  "created_utc": "2026-11-22T19:30:21+00:00",
+  "protocol": "strip outer whitespace; drop redundant train rows; drop train texts that occur in test (texts only); val = floor(10%) per class (seed 2026); nested per-class samples for seeds [0, 11, 22, 33]",
+  "raw": {
+    "train": {
+      "url": "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/train.csv",
+      "path": "data/raw/train.csv",
+      "sha256": "b06e26ac675513959a63135f11b94ea7786ed02da65db93a5650d8838cbc664b"
+    },
+    "test": {
+      "url": "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/test.csv",
+      "path": "data/raw/test.csv",
+      "sha256": "d12d6e3bc4c3103966ae786dc435913c0c563dfa328f5a3646d0e62cfeeb474d"
+    }
+  },
+  "audit": {
+    "original_train": 10003,
+    "original_test": 3080,
+    "label_conflicts": 0,
+    "redundant_train_rows": 4,
+    "cross_split_train_texts": 6,
+    "test_duplicate_rows": 1,
+    "clean_train": 9993,
+    "n_classes": 77,
+    "validation": 965,
+    "pool": 9028,
+    "min_pool_per_class": 32
+  },
+  "overlap_texts_removed_from_train": [
+    "At which ATMs can I use this card?",
+    "How do I unblock my PIN?",
+    "There are a few transaction that I don't recognize, I think someone managed to get my card details and use it.",
+    "What businesses accept this card?",
+    "Where can I use my card?",
+    "Which cash machines will allow me to change my PIN?"
+  ],
+  "files": {
+    "val.csv": "967d6bfbfae080e5c7bee1c6a968abbaff12f67cb9a3d0bd3754392aaab6f1f6",
+    "test.csv": "1de03855bdee14f2b199ded161563342319c5c3fa78b879c552bea0ffd1e3f6d",
+    "label_map.json": "e64b29ebfc59f9bdbf4d4756fadd29669ab8fe623203b66790cce6d1e1b8f5f8",
+    "train_k8_seed0.csv": "1e80bd1d3693050ade09070aaa81fbd65724f7f36ec22ec0b0d2f886fcd5624a",
+    "train_k32_seed0.csv": "78779559fe685af003f22d1f24c23c10571e5697399d56110c3328c486bb1f80",
+    "train_k8_seed11.csv": "e3ae6b7cd89031f0ec9f98df80ec16032e8c0811df99b2a186e3295e10182a79",
+    "train_k32_seed11.csv": "68af8c130a7030204469fbbcb7442945ce98e9ade1d6cb356055a177e179af94",
+    "train_k8_seed22.csv": "325098ea35b0710c0a51e3eb814eabbc46e94bc9f57e8ada8e3c158af8bc6149",
+    "train_k32_seed22.csv": "150297785a4aa4aa4537351df19821af9ec636b7a2e8ef8bad37458bd3bc8a77",
+    "train_k8_seed33.csv": "daadb3d2c00b7b32e0baf8e9726367c434c58259871fdb573cf73ce283bd1397",
+    "train_k32_seed33.csv": "6b0fe24f95958edfaae3e59e8937b3f07c0c6d6c18a43108d39842b70e9e09bc"
+  }
+}

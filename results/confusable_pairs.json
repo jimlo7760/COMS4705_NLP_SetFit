@@ -1,0 +1,31 @@
+{
+  "source": "frozen_k8_seed0_tuning_val.csv",
+  "rule": "largest C_ij + C_ji on seed-0 8-shot Frozen+LR validation; ties alphabetical",
+  "pairs": [
+    {
+      "intent_a": "declined_cash_withdrawal",
+      "intent_b": "wrong_amount_of_cash_received",
+      "val_confusions": 9
+    },
+    {
+      "intent_a": "top_up_failed",
+      "intent_b": "top_up_reverted",
+      "val_confusions": 8
+    },
+    {
+      "intent_a": "cash_withdrawal_not_recognised",
+      "intent_b": "pending_cash_withdrawal",
+      "val_confusions": 7
+    },
+    {
+      "intent_a": "balance_not_updated_after_bank_transfer",
+      "intent_b": "transfer_timing",
+      "val_confusions": 5
+    },
+    {
+      "intent_a": "beneficiary_not_allowed",
+      "intent_b": "failed_transfer",
+      "val_confusions": 4
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "run_id": "ce_k8_seed0_lr3e-05_tuning",
+  "phase": "tuning",
+  "method": "CE tuning",
+  "shots_per_intent": 8,
+  "sample_and_optimizer_seed": 0,
+  "learning_rate": 3e-05,
+  "head_lr": null,
+  "max_updates": 300,
+  "eval_every": 50,
+  "batch_size": 32,
+  "n_train": 616,
+  "n_val": 965,
+  "n_test": null,
+  "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+  "model_commit": null,
+  "amp_fp16": true,
+  "truncation_rate": {
+    "train": 0.0,
+    "val": 0.0,
+    "test": null
+  },
+  "created_utc": "2026-11-22T18:13:11+00:00",
+  "env": {
+    "python": "3.10.12",
+    "platform": "Linux-6.8.0-1073-gcp-x86_64-with-glibc2.35",
+    "torch": "2.14.1+cu130",
+    "device": "cuda",
+    "code_fingerprint": "f84d502ab77e561e",
+    "gpu": "NVIDIA L4",
+    "cuda": "13.0",
+    "gpu_memory_gb": 22.0,
+    "transformers": "5.20.2",
+    "sklearn": "1.7.2",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3"
+  },
+  "test_macro_f1": null,
+  "test_accuracy": null,
+  "test_per_class_recall": null,
+  "val_macro_f1": 0.5974484893561132,
+  "val_accuracy": 0.6113989637305699,
+  "best_step": 300,
+  "best_val_macro_f1": 0.5974484893561132,
+  "effective_head_lr": 3e-05,
+  "lr_checkpoint_fits_expected_max": 0,
+  "lr_checkpoint_fits_observed": 0,
+  "timing": {
+    "training_wall_sec_total": 11.9907,
+    "pair_build_sec": 0.0,
+    "encoder_update_sec": 10.3812,
+    "checkpoint_train_embedding_sec": 0.0,
+    "checkpoint_lr_fit_sec": 0.0,
+    "checkpoint_validation_sec": 1.5679,
+    "final_train_embedding_sec": 0.0,
+    "final_lr_fit_sec": 0.0,
+    "test_inference_sec_separate": null
+  },
+  "peak_gpu_memory_mb": 684.7,
+  "history": [
+    {
+      "step": 50,
+      "train_loss": 4.323040409088135,
+      "val_macro_f1": 0.09868869706400366,
+      "val_accuracy": 0.13471502590673576,
+      "lr": 2.777777777777778e-05
+    },
+    {
+      "step": 100,
+      "train_loss": 4.2394241619110105,
+      "val_macro_f1": 0.36592732448424425,
+      "val_accuracy": 0.41036269430051814,
+      "lr": 2.222222222222222e-05
+    },
+    {
+      "step": 150,
+      "train_loss": 4.167651796340943,
+      "val_macro_f1": 0.47677256063107804,
+      "val_accuracy": 0.505699481865285,
+      "lr": 1.6666666666666667e-05
+    },
+    {
+      "step": 200,
+      "train_loss": 4.1261687660217286,
+      "val_macro_f1": 0.5445531865186963,
+      "val_accuracy": 0.5709844559585492,
+      "lr": 1.111111111111111e-05
+    },
+    {
+      "step": 250,
+      "train_loss": 4.099662475585937,
+      "val_macro_f1": 0.5864794479731928,
+      "val_accuracy": 0.6010362694300518,
+      "lr": 5.555555555555555e-06
+    },
+    {
+      "step": 300,
+      "train_loss": 4.088518438339233,
+      "val_macro_f1": 0.5974484893561132,
+      "val_accuracy": 0.6113989637305699,
+      "lr": 0.0
+    }
+  ],
+  "loss_curve": [
+    [
+      10,
+      4.343742036819458
+    ],
+    [
+      20,
+      4.337511014938355
+    ],
+    [
+      30,
+      4.3276012420654295
+    ],
+    [
+      40,
+      4.313486385345459
+    ],
+    [
+      50,
+      4.292861366271973
+    ],
+    [
+      60,
+      4.2761523723602295
+    ],
+    [
+      70,
+      4.2552941799163815
+    ],
+    [
+      80,
+      4.238640213012696
+    ],
+    [
+      90,
+      4.215324020385742
+    ],
+    [
+      100,
+      4.211710023880005
+    ],
+    [
+      110,
+      4.190689182281494
+    ],
+    [
+      120,
+      4.176584339141845
+    ],
+    [
+      130,
+      4.1651441097259525
+    ],
+    [
+      140,
+      4.160255575180054
+    ],
+    [
+      150,
+      4.145585775375366
+    ],
+    [
+      160,
+      4.1403453826904295
+    ],
+    [
+      170,
+      4.125482511520386
+    ],
+    [
+      180,
+      4.133908605575561
+    ],
+    [
+      190,
+      4.114525270462036
+    ],
+    [
+      200,
+      4.11658205986023
+    ],
+    [
+      210,
+      4.109055614471435
+    ],
+    [
+      220,
+      4.10334734916687
+    ],
+    [
+      230,
+      4.098840236663818
+    ],
+    [
+      240,
+      4.09867033958435
+    ],
+    [
+      250,
+      4.088398838043213
+    ],
+    [
+      260,
+      4.095169448852539
+    ],
+    [
+      270,
+      4.08981614112854
+    ],
+    [
+      280,
+      4.083865451812744
+    ],
+    [
+      290,
+      4.089049530029297
+    ],
+    [
+      300,
+      4.0846916198730465
+    ]
+  ]
+}
