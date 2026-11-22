@@ -22,5 +22,8 @@ __pycache__/
 *.synctex.gz
 *.toc
 
-# macOS
+# macOS and editors
 .DS_Store
+.idea/
+.vscode/
+.Rhistory
