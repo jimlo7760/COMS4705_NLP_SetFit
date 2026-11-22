@@ -10,7 +10,7 @@ MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
 DATA_BASE_URL = ("https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/"
                  "master/banking_data/")
 RAW_FILES = {"train": "train.csv", "test": "test.csv"}
-RAW_SHA256 = {  # copied from data_audit.json in the proposal folder
+RAW_SHA256 = {  # copied from proposal/data_audit.json
     "train": "b06e26ac675513959a63135f11b94ea7786ed02da65db93a5650d8838cbc664b",
     "test": "d12d6e3bc4c3103966ae786dc435913c0c563dfa328f5a3646d0e62cfeeb474d",
 }

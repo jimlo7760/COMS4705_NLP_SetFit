@@ -9,7 +9,7 @@ import pandas as pd
 from . import config as C
 from .utils import log, read_json, write_json
 
-# Column order of COMS4705_Milestone_Draft/results_log_template.csv, then extras.
+# Column order of milestone/results_log_template.csv, then extras.
 TEMPLATE_COLUMNS = [
     "method", "shots_per_intent", "sample_and_optimizer_seed", "test_macro_f1", "test_accuracy",
     "training_wall_sec_total", "pair_build_sec", "encoder_update_sec",
