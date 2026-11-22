@@ -23,6 +23,10 @@ for the whole study. The smoke stage prints the real seconds per update.
 
 ## 1. Put the code on GitHub (once, on a Mac)
 
+The team repo is `https://github.com/jimlo7760/COMS4705_NLP_SetFit` (keep it **private**).
+Teammates: `git clone https://github.com/jimlo7760/COMS4705_NLP_SetFit.git` and skip to
+step 2. The steps below are how it was first set up.
+
 The project folder is already a Git repository with a first commit; `.gitignore` keeps
 `data/`, `results/`, caches and LaTeX build files out of it.
 
@@ -81,11 +85,10 @@ cat ~/.ssh/id_ed25519.pub
 
 2. On GitHub: repo → *Settings → Deploy keys → Add deploy key*. Title `setfit-vm`, paste
    the line that `cat` printed, leave **Allow write access** unticked, **Add key**.
-3. Clone and set up (replace `OWNER/REPO`; type `yes` when asked whether to trust
-   github.com):
+3. Clone and set up (type `yes` when asked whether to trust github.com):
 
 ```
-git clone git@github.com:OWNER/REPO.git ~/coms4705_setfit
+git clone git@github.com:jimlo7760/COMS4705_NLP_SetFit.git ~/coms4705_setfit
 bash ~/coms4705_setfit/experiments/vm_setup.sh
 ```
 
